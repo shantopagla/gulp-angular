@@ -1,0 +1,58 @@
+<div ng-show="vm.loading">
+	<div class="loading">loading...</div>
+</div>
+<div ng-hide="vm.loading" class="customerStats" >
+	<div class="row row-fluid text-center"><button ng-click="showStats=!showStats" ng-init="showStats=true" class="btn btn-default">stats</button></div>
+	<div class="row row-fluid " ng-hide="!showStats">
+		<div class="col-sm-4">
+			<ul>
+				<li>Total Users: {{vm.customerdata.length||0}}</li>
+				<li>Percent of Females: xx%</li>
+				<li>Percent of Males: xx%</li>
+			</ul>
+		</div>
+		<div class="col-sm-4">
+			<ul>
+				<li>Total users who performed a "signed_up": xx</li>
+				<li>Total users who performed a "viewed_profile": xx</li>
+				<li>Total users who performed a "view_item": xx</li>
+				<li>Total users who performed a "purchased_item": xx</li>
+			</ul>
+		</div>
+		<div class="col-sm-4">
+			<ul>
+				<li>Conversion from Signup > Purchase: xx%</li>
+				<li>Conversion from Signup > Viewed Profile > Purchase: xx%</li>
+				<li>Conversion from Signup > Viewed Item > Purchase Item: xx%</li>
+			</ul>
+		</div>
+	</div>
+	<div class="row row-fluid">
+		<div class="col-sm-6"><input class=" col-sm-4 form-control" ng-model="vm.firstNameFilter"></input></div>
+		<div class="col-sm-6"><button ng-click="vm.aggregateCustomerData();" class="btn btn-default pull-right">Add Row</button></div>
+	</div>
+</div>
+<div ng-if="!vm.loading" ui-grid="vm.gridOptions" class="table row-fluid" ></div>
+<!--
+<div ui-grid="{ data: vm.customerdata }" class="table container-fluid"></div>
+<table class="table table-fluid">
+	<tr>
+		<th >First Name</th>
+		<th >Last name</th>
+		<th >Gender</th>
+		<th >Company Name</th>
+		<th >Job Title</th>
+		<th >Email</th>
+		<th >ID</th>
+	</tr>
+	<tr ng-repeat="item in vm.customerdata" ng-class="">
+		<td >{{item.first_name}}</td>
+		<td >{{item.last_name}}</td>
+		<td >{{item.gender}}</td>
+		<td >{{item.company_name}}</td>
+		<td >{{item.job_title}}</td>
+		<td >{{item.email}}</td>
+		<td >{{item.id}}</td>
+	</tr>
+</table>
+-->
