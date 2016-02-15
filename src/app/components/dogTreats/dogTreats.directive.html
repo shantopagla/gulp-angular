@@ -1,38 +1,49 @@
 <div ng-show="vm.loading">
 	<div class="loading">loading...</div>
 </div>
-<div ng-hide="vm.loading" class="customerStats" >
-	<div class="row row-fluid text-center"><button ng-click="showStats=!showStats" ng-init="showStats=true" class="btn btn-default">stats</button></div>
-	<div class="row row-fluid " ng-hide="!showStats">
+<div ng-show="!vm.loading" class="chart" >
+	<div class="container container-fluid" ng-hide="showChart" ><button class="btn btn-info" ng-click="showChart=!showChart" >Show Chart</button></div>
+	<div class="container container-fluid chartContainer" ng-show="showChart">
+    	<nvd3 options="vm.chartOptions" data="vm.chartData" class="chartArea"></nvd3>
+		<div class="chartButtonArea pull-right">
+			<button class="btn btn-default col-xs-12" ng-click="showChart=!showChart" >Hide Chart</button>
+			<button class="btn btn-info col-xs-12" ng-click="showChart=!showChart" >Switch to By Color</button>
+		</div>
+	</div>
+</div>
+<div ng-show="!vm.loading" class="customerStats" >
+	<div class="row container-fluid text-center"><label ng-click="showStats=!showStats" ng-init="showStats=true" class="h4">stats</label></div>
+	<div class="row container-fluid show-animation hide-animation" ng-if="vm.stats.total" ng-hide="!showStats" ng-show="showStats">
 		<div class="col-sm-4">
 			<ul>
-				<li>Total Users: {{vm.customerdata.length||0}}</li>
-				<li>Percent of Females: xx%</li>
-				<li>Percent of Males: xx%</li>
+				<li>Total Users: {{vm.stats.total}}</li>
+				<li>Percent of Females: {{vm.stats.females.length/vm.stats.total*100|number:2}}%</li>
+				<li>Percent of Males: {{vm.stats.males.length/vm.stats.total*100|number:2}}%</li>
 			</ul>
 		</div>
 		<div class="col-sm-4">
 			<ul>
-				<li>Total users who performed a "signed_up": xx</li>
-				<li>Total users who performed a "viewed_profile": xx</li>
-				<li>Total users who performed a "view_item": xx</li>
-				<li>Total users who performed a "purchased_item": xx</li>
+				<li>Total users who performed a "signed_up": {{vm.stats.signed_up.length||0}}</li>
+				<li>Total users who performed a "viewed_profile": {{vm.stats.viewed_profile.length||0}}</li>
+				<li>Total users who performed a "viewed_item": {{vm.stats.viewed_item.length||0}}</li>
+				<li>Total users who performed a "purchased_item": {{vm.stats.purchased_item.length||0}}</li>
 			</ul>
 		</div>
 		<div class="col-sm-4">
 			<ul>
-				<li>Conversion from Signup > Purchase: xx%</li>
+				<li>Conversion from Signup > Purchase: {{vm.chartData.purchased_item.length/vm.customerdata.length*100|number:2}}%</li>
 				<li>Conversion from Signup > Viewed Profile > Purchase: xx%</li>
 				<li>Conversion from Signup > Viewed Item > Purchase Item: xx%</li>
 			</ul>
 		</div>
 	</div>
-	<div class="row row-fluid">
-		<div class="col-sm-6"><input class=" col-sm-4 form-control" ng-model="vm.firstNameFilter"></input></div>
-		<div class="col-sm-6"><button ng-click="vm.aggregateCustomerData();" class="btn btn-default pull-right">Add Row</button></div>
+	<div class="row container-fluid">
+		<div class="col-sm-4"><input class=" form-control" ng-model="vm.filtertext"></input></div>
+		<div class="col-sm-4"></div>
+		<div class="col-sm-4"><button ng-click="vm.aggregateCustomerData();" class="btn btn-sm btn-info pull-right">Add Row</button></div>
 	</div>
 </div>
-<div ng-if="!vm.loading" ui-grid="vm.gridOptions" class="table row-fluid" ></div>
+<div ng-if="!vm.loading" ui-grid="vm.gridOptions" class="table dog-treats-table" ></div>
 <!--
 <div ui-grid="{ data: vm.customerdata }" class="table container-fluid"></div>
 <table class="table table-fluid">
@@ -55,4 +66,6 @@
 		<td >{{item.id}}</td>
 	</tr>
 </table>
+{{vm.gridOptions.data|json}}
 -->
+<pre>{{vm.chartData|json}}</pre>

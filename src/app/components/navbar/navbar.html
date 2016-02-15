@@ -1,4 +1,4 @@
-<nav class="navbar navbar-static-top navbar-default container-fluid">
+<nav class="navbar navbar-static-top navbar-default row-fluid">
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="#">
@@ -8,13 +8,13 @@
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
       <ul class="nav navbar-nav">
-        <li class="active"><a ng-href="#">Home</a></li>
-        <li><a ng-href="#/about">About</a></li>
-        <li><a ng-href="#/contact">Contact</a></li>
-        <li><a ng-href="#/dogtreats">Dog Treats</a></li>
+        <li id="home" data-ng-class="{'active ': vm.navClass('home')}" ><a ng-href="#">Home</a></li>
+        <li id="about" data-ng-class="{'active ': vm.navClass('about')}" ><a ng-href="#/about">About</a></li>
+        <li id="contact" data-ng-class="{'active ': vm.navClass('contact')}" ><a ng-href="#/contact">Contact</a></li>
+        <li id="dogtreats" data-ng-class="{'active ': vm.navClass('dogtreats')}" ><a ng-href="#/dogtreats">Dog Treats</a></li>
       </ul>
 
-      <ul class="nav navbar-nav navbar-right si-navbar-text">
+      <ul class="nav navbar-nav navbar-right bavbar-inverse">
         <li>Application was created {{ vm.relativeDate }}.</li>
       </ul>
     </div>

@@ -24,7 +24,7 @@
         url: '/contact',
         templateUrl: 'app/contact/contact.html',
         controller: 'ContactController',
-        controllerAs: 'main'
+        controllerAs: 'contact'
       })
       .state('dogtreats', {
         url: '/dogtreats',

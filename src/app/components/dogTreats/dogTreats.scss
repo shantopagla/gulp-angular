@@ -1,25 +1,32 @@
 .dog-treats {
   text-transform: capitalize;
   color: #990000;
+}
 
-  &:after {
-    animation: cursor-blink 0.4s linear infinite;
-    content: "|";
-    color: #990000;
+.dog-treats-table{
+  font-size: 0.8em;
+  .ui.grid, .ui-grid-cell, .ui-grid-row{
+    height:auto!important;
+    border:none;
+  }
+  .ui-grid-cell-contents{
+    padding:2px; margin:2px;
   }
 }
 
-@keyframes cursor-blink {
-  1% {
-    opacity: 0;
+.customerStats{
+  font-size:0.8em;
+  ul{
+    padding:0.5em 0em 1em;
+    li{
+      list-style:none;
+    }
   }
-  40% {
-    opacity: 0;
-  }
-  60% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 1;
-  }
+}
+
+.chartContainer{
+  width:100%;
+  .btn{margin-bottom:5px;}
+  .chartArea{width:70%;}
+  .chartButtonArea{width:30%;}  
 }

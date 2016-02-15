@@ -26,15 +26,75 @@ $icon-font-path: "../../bower_components/bootstrap-sass/assets/fonts/bootstrap/"
     width: 50px;
   }
 }
-.customerStats{
-	font-size:0.8em;
-	ul{
-		padding:0.5em 0em 1em;
-		li{
-			list-style:none;
-		}
-	}
+/* Angular Animate skeleton */
+
+.ng-hide {
+    /* this is just another form of hiding an element */
+    display: block!important;
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
 }
+
+.showhide-animation {
+      -webkit-transition: all linear 0.2s;
+    transition: all linear 0.2s;
+      -webkit-animation: fadeInRight 0.3s;
+    -moz-animation: fadeInRight 3s;
+    -ms-animation: fadeInRight 0.3s;
+    animation: fadeInRight 3s;
+    line-height: 20px;
+    opacity: 1;
+}
+
+.show-animation.ng-hide {
+    line-height: 0;
+    opacity: 0;
+    padding: 0 10px;
+}
+
+.showhide-animation.ng-hide-add,
+.showhide-animation.ng-hide-remove {
+  -webkit-transition:0.5s linear all;
+  transition:0.5s linear all;
+
+  /* remember to add this */
+  display:block!important;
+  opacity:1;
+}
+.showhide-animation.ng-hide-leave,
+.showhide-animation.ng-hide-active {
+  -webkit-transition:0.5s linear all;
+  transition:0.5s linear all;
+
+  /* remember to add this */
+  display:block!important;
+  opacity:0;
+}
+
+
+.show-animation,
+.hide-animation {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) .6s;
+  -moz-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) .6s;
+  -o-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) .6s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) .6s;
+
+}
+
+.show-animation.ng-hide-remove,
+.hide-animation.ng-hide-add.ng-hide-add-active {
+    
+  opacity: 0;
+  display: block !important;
+}
+
+.hide-animation.ng-hide-add,
+.show-animation.ng-hide-remove.ng-hide-remove-active {
+  opacity: 1;
+  display: block !important;
+}
+
 /**
  *  Do not remove the comments below. It's the markers used by gulp-inject to inject
  *  all your sass files automatically
