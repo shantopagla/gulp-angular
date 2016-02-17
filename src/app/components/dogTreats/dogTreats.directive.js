@@ -21,6 +21,7 @@
     return directive;
 
     function linkFunc(scope, el, attr, vm) {
+      //Business Logic should go in the Link function as it is first in the $digest tree
       var watcher, watcher2;
 
       el.addClass('dog-treats-data');
@@ -36,7 +37,6 @@
           //what to do when 
           if (dataVal && dataVal.length){
             vm.gridOptions.data = vm.customerdata;
-            vm.chartData = vm.buildChartData();
             vm.stats = vm.statsData();
           }
       });
@@ -51,14 +51,13 @@
       });
 
       scope.$on('$destroy', function () {
-        watcher();
-        watcher2();
+        watcher(); watcher2();
       });
 
     }
     /** @ngInject */
-    function DogTreatsController($log, mockarooData) {
-      var vm = this;
+    function DogTreatsController($log, mockarooData, underscore) {
+      var vm = this; var _ = underscore;
       vm.gridOptions = {
         enableSorting: true,
         columnDefs: [
@@ -88,7 +87,6 @@
         return getCustomerData().then(function() {
           $log.info('Activated DogTreatsRUs Customerdata Directive');
           vm.loading=false;
-          vm.statsData();
         });
       }
 
@@ -104,7 +102,6 @@
         } else filteredData= vm.customerdata;
 
         return filteredData;
-        //return vm.customerdata;
       }
 
       vm.statsData = function(){
@@ -118,71 +115,77 @@
               viewed_item : _.pluck(vm.customerdata, 'viewed_item'),
               purchased_item : _.pluck(vm.customerdata, 'purchased_item'),
               signed_up : _.pluck(vm.customerdata, 'signed_up'),
-              conv_signup: vm.customerdata?_.filter(vm.customerdata, function(d){return ((d.signed_up && (undefined!==d.signed_up.date)&&(d.purchased_item && (undefined!==d.purchased_item.date))))}):0,
-              conv_profile: function(){ return conversionsFromSignup('signup')},
-              conv_item: function(){ return conversionsFromSignup('signup')}
+              conv_signup: vm.customerdata?_.filter(vm.customerdata, function(d){return ((d.signed_up && (d.signed_up.date)&&(d.purchased_item && (d.purchased_item.date))))}):0,
+              conv_profile: vm.customerdata?_.filter(vm.customerdata, function(d){return ((d.signed_up && (d.signed_up.date)&&(d.purchased_item && (d.purchased_item.date))&&(d.viewed_profile && (d.viewed_profile.date))))}):0,
+              conv_item: vm.customerdata?_.filter(vm.customerdata, function(d){return ((d.signed_up && (d.signed_up.date)&&(d.purchased_item && (d.purchased_item.date))&&(d.viewed_item && (d.viewed_item.date))))}):0
             }
             // taking out the null values
-            vm.stats.viewed_profile = _.filter(vm.stats.viewed_profile, function(d){return (d && (undefined!==d.date))});
-            vm.stats.viewed_item = _.filter(vm.stats.viewed_item, function(d){ return (d && (undefined!==d.date))});
-            vm.stats.purchased_item = _.filter(vm.stats.purchased_item, function(d){ return (d && (undefined!==d.date))});
-            vm.stats.signed_up = _.filter(vm.stats.signed_up, function(d){ return (d && (undefined!==d.date))});
-
-        }
-        function conversionsFromSignup(type){
-          if (vm.chartData){
-            var purchasedItems = _.filter(vm.chartData.purchased_item, function(d){
-              return (d && (undefined!==d.date))
-            });
-/*
-            switch type {
-              case 'signup': function(purchasedItems){
-                return purchasedItems?purchasedItems.length:0
-              };
-              case 'profile': function(purchasedItems){
-
-              };
-              case 'item': function(purchasedItems){
-
-              };
-            }
-*/
-          }
-          return 0;
+            vm.stats.viewed_profile = _.filter(vm.stats.viewed_profile, function(d){return (d && d.date)});
+            vm.stats.viewed_item = _.filter(vm.stats.viewed_item, function(d){ return (d && d.date)});
+            vm.stats.purchased_item = _.filter(vm.stats.purchased_item, function(d){ return (d && d.date)});
+            vm.stats.signed_up = _.filter(vm.stats.signed_up, function(d){ return (d && d.date)});
         }
         return vm.stats;
       }
 
       vm.buildChartData = function(){
 
-        $log.info('Chart Data Build Activated')
-        vm.chartData = {
-          viewed_profile : _.pluck(vm.customerdata, 'viewed_profile'),
-          viewed_item : _.pluck(vm.customerdata, 'viewed_item'),
-          purchased_item : _.pluck(vm.customerdata, 'purchased_item'),
-          signed_up : _.pluck(vm.customerdata, 'signed_up')
-        }
-        // taking out the null values
-        vm.chartData.viewed_profile = _.filter(vm.chartData.viewed_profile, function(d){return (d && (undefined!==d.date))});
-        vm.chartData.viewed_item = _.filter(vm.chartData.viewed_item, function(d){ return (d && (undefined!==d.date))});
-        vm.chartData.purchased_item = _.filter(vm.chartData.purchased_item, function(d){ return (d && (undefined!==d.date))});
-        vm.chartData.signed_up = _.filter(vm.chartData.signed_up, function(d){ return (d && (undefined!==d.date))});
+        $log.info('Chart Data Build Activated');
 
-        vm.chartData = {
-          viewed_profile : _.pluck(vm.chartData.viewed_profile, 'date'),
-          viewed_item : _.pluck(vm.chartData.viewed_item, 'date'),
-          purchased_item : _.pluck(vm.chartData.purchased_item, 'date'),
-          signed_up : _.pluck(vm.chartData.signed_up, 'date')
-        }
+        var chartData = _.pluck(vm.customerdata, 'purchased_item');
+        var data = [], cData=[], byColorData={undefined:[]}, dateUtc, colorData={undefined:[]};
+
+        // taking out the null values
+        chartData = _.filter(chartData, function(d){ return (d && d.date)});
+
+        _.each(chartData, function(d){
+          dateUtc = moment(d.date, 'MM/DD/YYYY').valueOf();
+          data.push(dateUtc); //for 'all data'
+          if (d.color){ //for 'by color' data
+            if (!byColorData[d.color])byColorData[d.color]=[];
+            if (!colorData[d.color]) colorData[d.color]=[];
+            byColorData[d.color].push(dateUtc)
+          }
+          else byColorData[undefined].push(dateUtc)
+        })
+        //by color data builder... TODO: REFACTOR!!!
         /*
-        vm.chartData = {
-          viewed_profile : _.each(vm.chartData.viewed_profile, function(d){return moment(d.date, 'MM/DD/YYYY')}),
-          viewed_item : _.pluck(vm.chartData.viewed_item, 'MM/DD/YYYY'),
-          purchased_item : _.pluck(vm.chartData.purchased_item, 'MM/DD/YYYY'),
-          signed_up : _.pluck(vm.chartData.signed_up, 'MM/DD/YYYY')
-        }
+          byColorData:{'colorName':[]}
         */
-        return vm.chartData;
+        _.each(byColorData, function(colorItems, index){
+          byColorData[index] = _.groupBy(byColorData[index], function(dat){ return dat; });
+          byColorData[index] = _.sortBy(byColorData[index], function(dat){ return dat[0]; });
+        })
+        // All Colors with Dates Data
+        _.each(byColorData, function(dat, key){
+          _.each(dat, function(d, index){
+            if (!colorData[key][index]) colorData[key][index]=[];
+            colorData[key][index]=[parseInt(d),d.length]
+          });
+        });
+        // END All Colors with Dates Data
+        
+        vm.chartConversionByColorData = [];
+        _.each(colorData, function(colorItem, key){
+          vm.chartConversionByColorData.push({
+            key: key,
+            values: colorItem
+          })
+        })
+        // All Dates Data
+        data = _.groupBy(data, function(dat){ return dat; });
+        _.each(data, function(dat, index){
+          cData.push([parseInt(index),dat.length])
+        });
+        cData = _.sortBy(cData, function(dat){ return dat[0]; });
+        // end All Dates data
+
+        vm.chartConversionData = [{
+          key: "Purchased: ",
+          values: cData
+        }];
+        $log.info(angular.toJson(vm.chartConversionByColorData))
+        return chartData;
       }
 
       vm.aggregateCustomerData = function() {
@@ -191,15 +194,51 @@
         return mockarooData.getCustomerData(1).then(function(data) {
           if (data && data.length){
             vm.customerdata.push(data[0]); // data is an array of object(s)
-            vm.buildChartData();
             vm.statsData();
+            vm.buildChartData();
           }
           return vm.customerdata;
         });
       }
+      vm.chartOptions =  {
+          chart: {
+              type: 'lineChart',
+              height: 350,
+              width: 550,
+              margin : {
+                  top: 20,
+                  right: 20,
+                  bottom: 65,
+                  left: 50
+              },
+              x: function(d){return d[0];},
+              y: function(d){return d[1]},
+              showValues: true,
+              valueFormat: function(d){
+                  return (d);
+              },
+              duration: 500,
+              xAxis: {
+                  //axisLabel: 'Date Purchased',
+                  tickFormat: function(d) {
+                      return d3.time.format('%x')(new Date(d))
+                  },
+                  rotateLabels: 30,
+                  showMaxMin: false
+              },
+              yAxis: {
+                  axisLabel: 'Quantity Purchased',
+                  axisLabelDistance: -10,
+                  tickFormat: function(d){
+                      return (d);
+                  }
+              }
+          }
+      };
+
 
       function getCustomerData() {
-        return mockarooData.getCustomerData(5).then(function(data) {
+        return mockarooData.getCustomerData(5000).then(function(data) {
           vm.customerdata = data;
           return vm.customerdata;
         });

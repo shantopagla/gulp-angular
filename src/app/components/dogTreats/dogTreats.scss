@@ -5,7 +5,7 @@
 
 .dog-treats-table{
   font-size: 0.8em;
-  .ui.grid, .ui-grid-cell, .ui-grid-row{
+  .ui.grid, .ui-grid-cell,.ui-grid-header, .grid-container, .ui-grid-row{
     height:auto!important;
     border:none;
   }
@@ -25,8 +25,10 @@
 }
 
 .chartContainer{
-  width:100%;
+  .chartButtonArea{width:30%; float:right;padding:0;margin:0;}  
   .btn{margin-bottom:5px;}
-  .chartArea{width:70%;}
-  .chartButtonArea{width:30%;}  
+  .chartArea{
+    width:70%; padding:0;margin:0;
+    .nv-background{width:100%!important}
+  }
 }

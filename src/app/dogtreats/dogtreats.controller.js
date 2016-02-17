@@ -6,7 +6,7 @@
     .controller('dogTreatsController', dogTreatsController);
 
   /** @ngInject */
-  function dogTreatsController($log, $timeout) {
+  function dogTreatsController($log) {
     var vm = this;
 
     vm.awesomeThings = [];
