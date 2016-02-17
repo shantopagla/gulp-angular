@@ -163,8 +163,6 @@
             colorData[key][index]=[parseInt(d),d.length]
           });
         });
-        // END All Colors with Dates Data
-        
         vm.chartConversionByColorData = [];
         _.each(colorData, function(colorItem, key){
           vm.chartConversionByColorData.push({
@@ -172,6 +170,8 @@
             values: colorItem
           })
         })
+        // END All Colors with Dates Data
+        
         // All Dates Data
         data = _.groupBy(data, function(dat){ return dat; });
         _.each(data, function(dat, index){
@@ -184,7 +184,6 @@
           key: "Purchased: ",
           values: cData
         }];
-        $log.info(angular.toJson(vm.chartConversionByColorData))
         return chartData;
       }
 
